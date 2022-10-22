@@ -65,8 +65,8 @@ fun CreateTopAppBar(
             }
         },
         navigationIcon = {
+            val dataList = title.split(",")
             if (isMainScreen) {
-                val dataList = title.split(",")
                 val favorite = favoritesList.filter { it.city == dataList[0] }.firstOrNull()
 
                 Icon(
@@ -104,10 +104,15 @@ fun CreateTopAppBar(
                         }
                 )
             } else {
-                IconButton(onClick = {
-                    navController.popBackStack()
-                }) {
-                    Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "back arrow")
+                if (dataList.isNotEmpty()) {
+                    IconButton(onClick = {
+                        navController.popBackStack()
+                    }) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "back arrow"
+                        )
+                    }
                 }
             }
         },
