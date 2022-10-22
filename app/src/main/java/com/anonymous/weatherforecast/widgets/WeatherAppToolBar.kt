@@ -11,7 +11,7 @@ import com.anonymous.weatherforecast.screens.main.CreateTopAppBar
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun CreateAppTopBar(
+fun WeatherAppToolBar(
     navController: NavHostController,
     title: String,
     isMainScreen: Boolean = true,
@@ -22,7 +22,7 @@ fun CreateAppTopBar(
             title = title,
             elevation = 5.dp,
             isMainScreen = isMainScreen,
-            navController = navController
+            navController = navController,
         )
     }) {
         content()

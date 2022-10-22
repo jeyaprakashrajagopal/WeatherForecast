@@ -12,14 +12,15 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class WeatherViewModel @Inject constructor(private val repository: WeatherForecastRepository) :
-    ViewModel() {
+class WeatherViewModel @Inject constructor(
+    private val repository: WeatherForecastRepository
+) : ViewModel() {
     private val _weatherResult =
         MutableStateFlow<WeatherResult<Weather, Boolean, java.lang.Exception>?>(WeatherResult())
     val weatherResult = _weatherResult.asStateFlow()
 
     fun getWeather(query: String) {
-        if(query.isBlank()) return
+        if (query.isBlank()) return
         viewModelScope.launch {
             _weatherResult.value = _weatherResult.value?.copy(loading = true)
             val result = repository.getWeather(query)

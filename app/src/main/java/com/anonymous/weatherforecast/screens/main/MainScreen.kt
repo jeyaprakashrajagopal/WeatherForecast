@@ -1,14 +1,10 @@
 package com.anonymous.weatherforecast.screens.main
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -17,12 +13,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -33,10 +26,9 @@ import com.anonymous.weatherforecast.data.WeatherResult
 import com.anonymous.weatherforecast.model.Weather
 import com.anonymous.weatherforecast.model.WeatherItem
 import com.anonymous.weatherforecast.utils.formatDate
-import com.anonymous.weatherforecast.utils.formatDateToDay
 import com.anonymous.weatherforecast.utils.formatTime
-import com.anonymous.weatherforecast.widgets.CreateAppTopBar
 import com.anonymous.weatherforecast.widgets.CreateDayInformation
+import com.anonymous.weatherforecast.widgets.WeatherAppToolBar
 
 @Composable
 fun MainScreen(
@@ -47,15 +39,18 @@ fun MainScreen(
     val weatherData = mainViewModel.weatherResult.collectAsState()
     if (city.trim().isNotBlank()) {
         mainViewModel.getWeather(city)
-    }
-    else {
+    } else {
         mainViewModel.getWeather("Offenbach")
     }
-    CreateAppTopBar(navController, if (weatherData.value?.data?.city != null) {
-        "${weatherData.value?.data?.city?.name}, ${weatherData.value?.data?.city?.country}"
-    } else {
-        "WeatherForeCast"
-    }) {
+
+    WeatherAppToolBar(
+        navController,
+        if (weatherData.value?.data?.city != null) {
+            "${weatherData.value?.data?.city?.name},${weatherData.value?.data?.city?.country}"
+        } else {
+            "WeatherForeCast"
+        }
+    ) {
         CreateContent(weatherData)
     }
 }

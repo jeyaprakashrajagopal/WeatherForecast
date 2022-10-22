@@ -1,24 +1,40 @@
 package com.anonymous.weatherforecast.screens.main
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.anonymous.weatherforecast.model.Favorite
 import com.anonymous.weatherforecast.navigation.WeatherScreens
+import com.anonymous.weatherforecast.screens.favorites.FavoriteViewModel
 
 @Composable
 fun CreateTopAppBar(
     title: String,
     isMainScreen: Boolean = true,
     elevation: Dp,
-    navController: NavHostController
+    navController: NavHostController,
+    hiltViewModel: FavoriteViewModel = androidx.hilt.navigation.compose.hiltViewModel(),
 ) {
+    val showDialog = remember {
+        mutableStateOf(false)
+    }
+    if (showDialog.value) {
+        ShowSettingDropDownMenu(showDialog, navController)
+    }
+
+    val favoritesList by hiltViewModel.favoritesList.collectAsState()
+
     TopAppBar(
         title = {
             Text(
@@ -34,7 +50,9 @@ fun CreateTopAppBar(
                 }) {
                     Icon(imageVector = Icons.Default.Search, contentDescription = "Search icon")
                 }
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(onClick = {
+                    showDialog.value = true
+                }) {
                     Icon(imageVector = Icons.Rounded.MoreVert, contentDescription = "More icon")
                 }
             } else {
@@ -42,8 +60,34 @@ fun CreateTopAppBar(
             }
         },
         navigationIcon = {
-            if (!isMainScreen) {
-                IconButton(onClick = { /*TODO*/ }) {
+            if (isMainScreen) {
+                val dataList = title.split(",")
+                val favorite = remember(favoritesList) {
+                    favoritesList.firstOrNull()
+                }
+                Icon(
+                    imageVector = Icons.Default.FavoriteBorder,
+                    contentDescription = "Favorite icon",
+                    tint = if (favorite != null) Color.Red.copy(alpha = 0.6f) else Color.LightGray,
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .clickable {
+                            if (favorite == null) {
+                                hiltViewModel.insertFavorite(
+                                    Favorite(
+                                        city = dataList[0],
+                                        country = dataList[1]
+                                    )
+                                )
+                            } else {
+                                hiltViewModel.deleteFavorite(favorite = favorite)
+                            }
+                        }
+                )
+            } else {
+                IconButton(onClick = {
+                    navController.popBackStack()
+                }) {
                     Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "back arrow")
                 }
             }
@@ -51,4 +95,59 @@ fun CreateTopAppBar(
         backgroundColor = Color.Transparent,
         elevation = elevation
     )
+}
+
+@Composable
+private fun ShowSettingDropDownMenu(
+    showDialog: MutableState<Boolean>,
+    navController: NavHostController
+) {
+    var expanded by remember {
+        mutableStateOf(true)
+    }
+    val dropDownMenuItems = listOf("About", "Favorites", "Settings")
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentSize(Alignment.TopEnd)
+            .absolutePadding(top = 45.dp, right = 20.dp)
+    ) {
+        DropdownMenu(
+            expanded = expanded, onDismissRequest = {
+                showDialog.value = false
+                expanded = false
+            },
+            modifier = Modifier
+                .width(140.dp)
+                .background(Color.White)
+        ) {
+            dropDownMenuItems.forEach {
+                DropdownMenuItem(onClick = {
+                    expanded = false
+                    showDialog.value = false
+                    when (it) {
+                        "About" -> navController.navigate(WeatherScreens.AboutScreen.name)
+                        "Favorites" -> navController.navigate(WeatherScreens.FavouriteScreen.name)
+                        "Settings" -> navController.navigate(WeatherScreens.SettingsScreen.name)
+                    }
+                }) {
+                    Icon(
+                        imageVector = when (it) {
+                            "About" -> Icons.Default.Info
+                            "Favorites" -> Icons.Default.Favorite
+                            "Settings" -> Icons.Default.Settings
+                            else -> Icons.Default.Warning
+                        }, contentDescription = null
+                    )
+                    Text(
+                        text = it,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(5.dp),
+                        style = MaterialTheme.typography.caption
+                    )
+                }
+            }
+        }
+    }
 }

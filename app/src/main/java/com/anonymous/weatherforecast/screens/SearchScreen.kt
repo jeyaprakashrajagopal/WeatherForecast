@@ -23,11 +23,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.anonymous.weatherforecast.widgets.CreateAppTopBar
+import com.anonymous.weatherforecast.widgets.WeatherAppToolBar
 
 @Composable
 fun SearchScreen(navController: NavHostController) {
-    CreateAppTopBar(navController = navController, title = "Search", isMainScreen = false) {
+    WeatherAppToolBar(navController = navController, title = "Search", isMainScreen = false) {
         SearchBar {
             navController.previousBackStackEntry?.arguments?.putString(
                 "city",

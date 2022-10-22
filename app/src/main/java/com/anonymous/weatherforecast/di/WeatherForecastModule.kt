@@ -1,10 +1,14 @@
 package com.anonymous.weatherforecast.di
 
+import android.content.Context
+import androidx.room.Room
+import com.anonymous.weatherforecast.database.WeatherAppDatabase
 import com.anonymous.weatherforecast.network.WeatherForecastAPIService
 import com.anonymous.weatherforecast.network.WeatherForecastAPIService.Companion.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -20,4 +24,14 @@ object WeatherForecastModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(WeatherForecastAPIService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideDatabase(@ApplicationContext context: Context) =
+        Room.databaseBuilder(context, WeatherAppDatabase::class.java, "Weather Database")
+            .fallbackToDestructiveMigration().build()
+
+    @Provides
+    @Singleton
+    fun provideDao(weatherAppDatabase: WeatherAppDatabase) = weatherAppDatabase.getDAO()
 }
