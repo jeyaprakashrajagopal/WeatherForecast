@@ -44,8 +44,8 @@ fun MainScreen(
     }
 
     WeatherAppToolBar(
-        navController,
-        if (weatherData.value?.data?.city != null) {
+        navController = navController,
+        title = if (weatherData.value?.data?.city != null) {
             "${weatherData.value?.data?.city?.name},${weatherData.value?.data?.city?.country}"
         } else {
             "WeatherForeCast"
@@ -236,7 +236,8 @@ fun CreateWeatherWidget(weatherData: State<WeatherResult<Weather, Boolean, Excep
                 }"
                         + "°",
                 style = MaterialTheme.typography.h4,
-                fontWeight = FontWeight.ExtraBold
+                fontWeight = FontWeight.ExtraBold,
+                modifier = Modifier.weight(1f)
             )
             Text(
                 text = "${weatherData.value?.data?.list?.first()?.weather?.first()?.main}",
@@ -247,11 +248,13 @@ fun CreateWeatherWidget(weatherData: State<WeatherResult<Weather, Boolean, Excep
 }
 
 @Composable
-fun WeatherStateImage(imageUrl: String) {
+fun WeatherStateImage(imageUrl: String, modifier: Modifier = Modifier) {
     Image(
         painter = rememberImagePainter(imageUrl),
         contentDescription = "Icon image",
-        modifier = Modifier.size(80.dp)
+        modifier = Modifier
+            .size(80.dp)
+            .then(modifier)
     )
 }
 

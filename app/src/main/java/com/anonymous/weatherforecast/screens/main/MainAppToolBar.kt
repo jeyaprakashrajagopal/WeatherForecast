@@ -1,5 +1,7 @@
 package com.anonymous.weatherforecast.screens.main
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,9 +13,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.anonymous.weatherforecast.R
 import com.anonymous.weatherforecast.model.Favorite
 import com.anonymous.weatherforecast.navigation.WeatherScreens
 import com.anonymous.weatherforecast.screens.favorites.FavoriteViewModel
@@ -34,6 +38,7 @@ fun CreateTopAppBar(
     }
 
     val favoritesList by hiltViewModel.favoritesList.collectAsState()
+    val context = LocalContext.current
 
     TopAppBar(
         title = {
@@ -62,15 +67,15 @@ fun CreateTopAppBar(
         navigationIcon = {
             if (isMainScreen) {
                 val dataList = title.split(",")
-                val favorite = remember(favoritesList) {
-                    favoritesList.firstOrNull()
-                }
+                val favorite = favoritesList.filter { it.city == dataList[0] }.firstOrNull()
+
                 Icon(
-                    imageVector = Icons.Default.FavoriteBorder,
+                    imageVector = Icons.Filled.Favorite,
                     contentDescription = "Favorite icon",
                     tint = if (favorite != null) Color.Red.copy(alpha = 0.6f) else Color.LightGray,
                     modifier = Modifier
                         .padding(5.dp)
+
                         .clickable {
                             if (favorite == null) {
                                 hiltViewModel.insertFavorite(
@@ -79,8 +84,22 @@ fun CreateTopAppBar(
                                         country = dataList[1]
                                     )
                                 )
+                                showToast(
+                                    context,
+                                    context.getString(
+                                        R.string.add_favorite_toast_label,
+                                        dataList[0]
+                                    )
+                                )
                             } else {
                                 hiltViewModel.deleteFavorite(favorite = favorite)
+                                showToast(
+                                    context,
+                                    context.getString(
+                                        R.string.remove_favorite_toast_label,
+                                        dataList[0]
+                                    )
+                                )
                             }
                         }
                 )
@@ -95,6 +114,10 @@ fun CreateTopAppBar(
         backgroundColor = Color.Transparent,
         elevation = elevation
     )
+}
+
+fun showToast(context: Context, toastMessage: String) {
+    Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
 }
 
 @Composable

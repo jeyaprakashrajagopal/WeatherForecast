@@ -1,13 +1,11 @@
 package com.anonymous.weatherforecast.widgets
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -29,31 +27,43 @@ fun CreateDayInformation(it: WeatherItem) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(15.dp),
+            .padding(5.dp),
         shape = CircleShape.copy(topEnd = CornerSize(6.dp)),
         color = Color.LightGray.copy(0.5f)
     ) {
         Row(
-            modifier = Modifier.padding(5.dp),
+            modifier = Modifier.padding(10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = "${formatDateToDay(it.dt)}")
-            WeatherStateImage(imageUrl = imageUrl)
+            Text(
+                text = formatDateToDay(it.dt),
+                style = MaterialTheme.typography.h6,
+                modifier = Modifier.weight(1f)
+            )
+            WeatherStateImage(imageUrl = imageUrl, modifier = Modifier.weight(1f))
             Text(
                 text = it.weather.first().description,
-                modifier = Modifier.background(
-                    Color.Red.copy(0.5f),
-                    shape = RoundedCornerShape(10.dp)
-                ).padding(5.dp)
+                modifier = Modifier
+                    .weight(3f)
+                    .wrapContentSize()
+                    .background(
+                        Color.Red.copy(0.5f),
+                        shape = RoundedCornerShape(10.dp)
+                    )
+                    .padding(5.dp)
             )
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.wrapContentSize()
+            ) {
                 Text(
                     text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(
-                            color = Color.Blue.copy(alpha = 0.7f),
-                            fontWeight = FontWeight.ExtraBold
-                        )
+                        withStyle(
+                            style = SpanStyle(
+                                color = Color.Blue.copy(alpha = 0.7f),
+                                fontWeight = FontWeight.ExtraBold
+                            )
                         ) {
                             append("${it.temp.min}°")
                         }

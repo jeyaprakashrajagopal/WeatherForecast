@@ -18,10 +18,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.anonymous.weatherforecast.model.Favorite
+import com.anonymous.weatherforecast.navigation.WeatherScreens
 import com.anonymous.weatherforecast.screens.favorites.FavoriteViewModel
 import com.anonymous.weatherforecast.widgets.WeatherAppToolBar
 
@@ -41,16 +43,30 @@ fun FavouriteScreen(
                 Text(text = "Your favorites list is empty!")
             }
         }
-        LazyColumn {
-            items(favoritesList.value) {
-                CreateFavoriteRow(favoriteViewModel, it)
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            LazyColumn {
+                items(favoritesList.value, key = {
+                    it.id
+                }) { favorite ->
+                    CreateFavoriteRow(favoriteViewModel, favorite) { city ->
+                        navController.navigate(WeatherScreens.MainScreen.name + "/$city")
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
-fun CreateFavoriteRow(favoriteViewModel: FavoriteViewModel, favorite: Favorite) {
+fun CreateFavoriteRow(
+    favoriteViewModel: FavoriteViewModel,
+    favorite: Favorite,
+    onRowClicked: (String) -> Unit
+) {
     Surface(
         modifier = Modifier
             .padding(15.dp)
@@ -61,23 +77,43 @@ fun CreateFavoriteRow(favoriteViewModel: FavoriteViewModel, favorite: Favorite) 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp),
+                .padding(10.dp)
+                .clickable {
+                    onRowClicked(favorite.city)
+                },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            Text(text = favorite.city, style = MaterialTheme.typography.h5)
             Text(
-                text = favorite.country, modifier = Modifier
-                    .padding(10.dp)
-                    .clip(CircleShape)
+                text = favorite.city,
+                style = MaterialTheme.typography.h5,
+                modifier = Modifier.weight(3f),
+                overflow = TextOverflow.Ellipsis
             )
+
+            Surface(
+                modifier = Modifier
+                    .padding(5.dp)
+                    .wrapContentSize()
+                    .clip(CircleShape),
+                shape = CircleShape,
+                color = Color.White
+            ) {
+                Text(
+                    text = favorite.country, modifier = Modifier
+                        .padding(10.dp)
+                        .clip(CircleShape)
+                )
+            }
             Icon(
                 imageVector = Icons.Filled.Delete,
                 contentDescription = "Delete icon",
                 tint = Color.Red.copy(alpha = 0.5f),
-                modifier = Modifier.clickable {
-                    favoriteViewModel.deleteFavorite(favorite)
-                }
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable {
+                        favoriteViewModel.deleteFavorite(favorite)
+                    }
             )
         }
     }

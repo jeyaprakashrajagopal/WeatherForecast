@@ -2,4 +2,6 @@
     <string name="app_name">WeatherForecast</string>
     <string name="about_app">"Weather App v1.0 "</string>
     <string name="api_used">Weather API by: https://openweathermap.org</string>
+    <string name="add_favorite_toast_label">%1$s is added to favorites!</string>
+    <string name="remove_favorite_toast_label">%1$s is removed from your favorites!</string>
 </resources>
