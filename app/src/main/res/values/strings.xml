@@ -4,4 +4,6 @@
     <string name="api_used">Weather API by: https://openweathermap.org</string>
     <string name="add_favorite_toast_label">%1$s is added to favorites!</string>
     <string name="remove_favorite_toast_label">%1$s is removed from your favorites!</string>
+    <string name="change_unit_text_label">Change Units of Measurement</string>
+    <string name="save_button_label">Save</string>
 </resources>

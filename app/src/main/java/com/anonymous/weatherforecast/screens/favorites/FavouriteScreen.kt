@@ -1,4 +1,4 @@
-package com.anonymous.weatherforecast.screens
+package com.anonymous.weatherforecast.screens.favorites
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -24,7 +24,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.anonymous.weatherforecast.model.Favorite
 import com.anonymous.weatherforecast.navigation.WeatherScreens
-import com.anonymous.weatherforecast.screens.favorites.FavoriteViewModel
 import com.anonymous.weatherforecast.widgets.WeatherAppToolBar
 
 @Composable

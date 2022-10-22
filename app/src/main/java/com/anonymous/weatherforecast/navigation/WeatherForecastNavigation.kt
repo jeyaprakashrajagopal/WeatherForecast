@@ -7,10 +7,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.anonymous.weatherforecast.screens.*
+import com.anonymous.weatherforecast.screens.AboutScreen
+import com.anonymous.weatherforecast.screens.SearchScreen
 import com.anonymous.weatherforecast.screens.favorites.FavoriteViewModel
+import com.anonymous.weatherforecast.screens.favorites.FavouriteScreen
 import com.anonymous.weatherforecast.screens.main.MainScreen
 import com.anonymous.weatherforecast.screens.main.WeatherViewModel
+import com.anonymous.weatherforecast.screens.settings.SettingsScreen
+import com.anonymous.weatherforecast.screens.splash.SplashScreen
 
 @Composable
 fun WeatherForecastNavigation() {
@@ -19,7 +23,7 @@ fun WeatherForecastNavigation() {
         composable(WeatherScreens.SplashScreen.name) {
             SplashScreen(navController)
         }
-        composable(route = WeatherScreens.MainScreen.name+"/{city}", arguments = listOf(
+        composable(route = WeatherScreens.MainScreen.name + "/{city}", arguments = listOf(
             navArgument(name = "city") {
                 type = NavType.StringType
                 defaultValue = ""
@@ -27,9 +31,9 @@ fun WeatherForecastNavigation() {
             }
         )) { navBack ->
             val city = navBack.arguments?.getString("city")
-            if(city != null) {
+            if (city != null) {
                 val viewModel: WeatherViewModel = hiltViewModel()
-                MainScreen(navController, viewModel, city)
+                MainScreen(navController, viewModel, city = city)
             }
         }
         composable(WeatherScreens.FavouriteScreen.name) {

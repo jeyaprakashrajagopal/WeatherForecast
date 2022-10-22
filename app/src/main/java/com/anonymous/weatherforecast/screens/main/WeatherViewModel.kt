@@ -19,11 +19,11 @@ class WeatherViewModel @Inject constructor(
         MutableStateFlow<WeatherResult<Weather, Boolean, java.lang.Exception>?>(WeatherResult())
     val weatherResult = _weatherResult.asStateFlow()
 
-    fun getWeather(query: String) {
+    fun getWeather(query: String, unit: String) {
         if (query.isBlank()) return
         viewModelScope.launch {
             _weatherResult.value = _weatherResult.value?.copy(loading = true)
-            val result = repository.getWeather(query)
+            val result = repository.getWeather(query, unit)
             _weatherResult.value = _weatherResult.value?.copy(data = result.data)
             _weatherResult.value = _weatherResult.value?.copy(loading = false)
         }

@@ -6,9 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,6 +23,7 @@ import com.anonymous.weatherforecast.components.CircularProgressBar
 import com.anonymous.weatherforecast.data.WeatherResult
 import com.anonymous.weatherforecast.model.Weather
 import com.anonymous.weatherforecast.model.WeatherItem
+import com.anonymous.weatherforecast.screens.settings.SettingsViewModel
 import com.anonymous.weatherforecast.utils.formatDate
 import com.anonymous.weatherforecast.utils.formatTime
 import com.anonymous.weatherforecast.widgets.CreateDayInformation
@@ -34,15 +33,25 @@ import com.anonymous.weatherforecast.widgets.WeatherAppToolBar
 fun MainScreen(
     navController: NavHostController,
     mainViewModel: WeatherViewModel = hiltViewModel(),
+    settingsViewModel: SettingsViewModel = hiltViewModel(),
     city: String
 ) {
     val weatherData = mainViewModel.weatherResult.collectAsState()
-    if (city.trim().isNotBlank()) {
-        mainViewModel.getWeather(city)
-    } else {
-        mainViewModel.getWeather("Offenbach")
-    }
 
+    val unitFromDb = settingsViewModel.unitList.collectAsState().value
+    var unit by remember {
+        mutableStateOf("imperial")
+    }
+    var isImperial by remember {
+        mutableStateOf(false)
+    }
+    val curCity: String = city.ifBlank { "Offenbach" }
+
+    if (!unitFromDb.isNullOrEmpty()) {
+        unit = unitFromDb[0].unit.split(" ")[0].lowercase()
+        isImperial = unit == "imperial"
+        mainViewModel.getWeather(curCity, unit)
+    }
     WeatherAppToolBar(
         navController = navController,
         title = if (weatherData.value?.data?.city != null) {

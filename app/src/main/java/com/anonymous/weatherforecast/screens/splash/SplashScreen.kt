@@ -1,9 +1,8 @@
-package com.anonymous.weatherforecast.screens
+package com.anonymous.weatherforecast.screens.splash
 
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateSizeAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -22,7 +21,6 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.anonymous.weatherforecast.R
@@ -37,9 +35,12 @@ fun SplashScreen(navController: NavController) {
     val sizeChanges = remember {
         mutableStateOf(0.dp)
     }
-    val size = animateDpAsState(targetValue = sizeChanges.value, animationSpec = tween(durationMillis = 1000, easing = {
-        OvershootInterpolator(8f).getInterpolation(it)
-    }))
+    val size = animateDpAsState(
+        targetValue = sizeChanges.value,
+        animationSpec = tween(durationMillis = 1000, easing = {
+            OvershootInterpolator(8f).getInterpolation(it)
+        })
+    )
 
     LaunchedEffect(key1 = true) {
         scale.animateTo(0.9f, animationSpec = tween(durationMillis = 1000, easing = {

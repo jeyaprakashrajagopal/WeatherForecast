@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.sp
 
 data class Sizing(
     val default: TextUnit = 0.sp,
-    val extraSmall : TextUnit = 4.sp,
+    val extraSmall: TextUnit = 4.sp,
     val small: TextUnit = 8.sp,
     val medium: TextUnit = 4.sp,
     val normal: TextUnit = 18.sp,
