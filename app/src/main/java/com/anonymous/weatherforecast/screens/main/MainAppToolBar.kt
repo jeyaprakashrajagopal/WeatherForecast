@@ -28,7 +28,7 @@ fun CreateTopAppBar(
     isMainScreen: Boolean = true,
     elevation: Dp,
     navController: NavHostController,
-    hiltViewModel: FavoriteViewModel = androidx.hilt.navigation.compose.hiltViewModel(),
+    favoriteViewModel: FavoriteViewModel = androidx.hilt.navigation.compose.hiltViewModel()
 ) {
     val showDialog = remember {
         mutableStateOf(false)
@@ -37,7 +37,7 @@ fun CreateTopAppBar(
         ShowSettingDropDownMenu(showDialog, navController)
     }
 
-    val favoritesList by hiltViewModel.favoritesList.collectAsState()
+    val favoritesList = favoriteViewModel.favoritesList.collectAsState()
     val context = LocalContext.current
 
     TopAppBar(
@@ -67,7 +67,7 @@ fun CreateTopAppBar(
         navigationIcon = {
             val dataList = title.split(",")
             if (isMainScreen) {
-                val favorite = favoritesList.filter { it.city == dataList[0] }.firstOrNull()
+                val favorite = favoritesList.value.filter { it.city == dataList[0] }.firstOrNull()
 
                 Icon(
                     imageVector = Icons.Filled.Favorite,
@@ -78,7 +78,7 @@ fun CreateTopAppBar(
 
                         .clickable {
                             if (favorite == null) {
-                                hiltViewModel.insertFavorite(
+                                favoriteViewModel.insertFavorite(
                                     Favorite(
                                         city = dataList[0],
                                         country = dataList[1]
@@ -92,7 +92,7 @@ fun CreateTopAppBar(
                                     )
                                 )
                             } else {
-                                hiltViewModel.deleteFavorite(favorite = favorite)
+                                favoriteViewModel.deleteFavorite(favorite = favorite)
                                 showToast(
                                     context,
                                     context.getString(

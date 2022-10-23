@@ -8,7 +8,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,7 +23,7 @@ class SettingsViewModel @Inject constructor(private val weatherDBRepository: Wea
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            weatherDBRepository.getUnits().distinctUntilChanged().collect {
+            weatherDBRepository.getUnits().collect {
                 if (it.isNotEmpty()) {
                     _unitList.value = it
                 } else {

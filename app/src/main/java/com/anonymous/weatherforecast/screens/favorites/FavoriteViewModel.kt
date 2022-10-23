@@ -21,7 +21,7 @@ class FavoriteViewModel @Inject constructor(private val weatherDBRepository: Wea
     val favoritesList = _favoritesList.asStateFlow()
 
     private val _error = MutableStateFlow<String?>(null)
-    val error = _favoritesList.asStateFlow()
+    val error = _error.asStateFlow()
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
         _error.value = throwable.message.toString()
@@ -65,8 +65,8 @@ class FavoriteViewModel @Inject constructor(private val weatherDBRepository: Wea
             weatherDBRepository.deleteFavorite(favorite)
 
             _favoritesList.update {
-                _favoritesList.value.filterNot {
-                    it.id == favorite.id
+                it.filter { favoriteParam ->
+                    favoriteParam.id != favorite.id
                 }
             }
         }

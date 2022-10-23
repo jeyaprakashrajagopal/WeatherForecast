@@ -19,6 +19,7 @@ import com.anonymous.weatherforecast.screens.splash.SplashScreen
 @Composable
 fun WeatherForecastNavigation() {
     val navController = rememberNavController()
+    val favoriteViewModel: FavoriteViewModel = hiltViewModel()
     NavHost(navController = navController, startDestination = WeatherScreens.SplashScreen.name) {
         composable(WeatherScreens.SplashScreen.name) {
             SplashScreen(navController)
@@ -33,11 +34,15 @@ fun WeatherForecastNavigation() {
             val city = navBack.arguments?.getString("city")
             if (city != null) {
                 val viewModel: WeatherViewModel = hiltViewModel()
-                MainScreen(navController, viewModel, city = city)
+                MainScreen(
+                    navController = navController,
+                    mainViewModel = viewModel,
+                    city = city,
+                    favoriteViewModel = favoriteViewModel
+                )
             }
         }
         composable(WeatherScreens.FavouriteScreen.name) {
-            val favoriteViewModel: FavoriteViewModel = hiltViewModel()
             FavouriteScreen(navController, favoriteViewModel)
         }
         composable(WeatherScreens.SearchScreen.name) {
