@@ -16,11 +16,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.anonymous.weatherforecast.R
 import com.anonymous.weatherforecast.model.Unit
+import com.anonymous.weatherforecast.ui.theme.dimensions
+import com.anonymous.weatherforecast.ui.theme.sizing
 import com.anonymous.weatherforecast.widgets.WeatherAppToolBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,12 +37,8 @@ fun SettingsScreen(
     var isToggleState by remember {
         mutableStateOf(false)
     }
-    val defaultChoice =
+    var choiceState =
         if (choiceFromDb.isNotEmpty()) choiceFromDb.first().unit else measurementUnits[0]
-
-    var choiceState by remember {
-        mutableStateOf(defaultChoice)
-    }
 
     val scope = rememberCoroutineScope()
 
@@ -49,7 +46,7 @@ fun SettingsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(10.dp),
+                .padding(MaterialTheme.dimensions.dimen1_25),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -57,7 +54,7 @@ fun SettingsScreen(
             Text(
                 text = stringResource(id = R.string.change_unit_text_label),
                 style = MaterialTheme.typography.h5,
-                modifier = Modifier.padding(10.dp)
+                modifier = Modifier.padding(MaterialTheme.dimensions.dimen1_25)
             )
             IconToggleButton(
                 checked = !isToggleState, onCheckedChange = {
@@ -86,7 +83,7 @@ fun SettingsScreen(
                 Text(
                     text = stringResource(id = R.string.save_button_label),
                     style = MaterialTheme.typography.h6,
-                    fontSize = 18.sp
+                    fontSize = MaterialTheme.sizing.large
                 )
             }
         }

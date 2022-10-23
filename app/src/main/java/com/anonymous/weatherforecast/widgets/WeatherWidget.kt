@@ -19,6 +19,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.anonymous.weatherforecast.model.WeatherItem
 import com.anonymous.weatherforecast.screens.main.WeatherStateImage
+import com.anonymous.weatherforecast.ui.theme.dimensions
 import com.anonymous.weatherforecast.utils.formatDateToDay
 
 @Composable
@@ -32,7 +33,7 @@ fun CreateDayInformation(it: WeatherItem) {
         color = Color.LightGray.copy(0.5f)
     ) {
         Row(
-            modifier = Modifier.padding(10.dp),
+            modifier = Modifier.padding(MaterialTheme.dimensions.dimen1_25),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -49,7 +50,7 @@ fun CreateDayInformation(it: WeatherItem) {
                     .wrapContentSize()
                     .background(
                         Color.Red.copy(0.5f),
-                        shape = RoundedCornerShape(10.dp)
+                        shape = RoundedCornerShape(MaterialTheme.dimensions.dimen1_25)
                     )
                     .padding(5.dp)
             )

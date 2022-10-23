@@ -24,6 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.anonymous.weatherforecast.model.Favorite
 import com.anonymous.weatherforecast.navigation.WeatherScreens
+import com.anonymous.weatherforecast.ui.theme.dimensions
 import com.anonymous.weatherforecast.widgets.WeatherAppToolBar
 
 @Composable
@@ -35,7 +36,7 @@ fun FavouriteScreen(
     WeatherAppToolBar(navController = navController, title = "Favorites", isMainScreen = false) {
         if (favoritesList.value.isEmpty()) {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -62,7 +63,7 @@ fun FavouriteScreen(
 
 @Composable
 fun CreateFavoriteRow(
-    favoriteViewModel: FavoriteViewModel,
+    favoriteViewModel: FavoriteViewModel = hiltViewModel(),
     favorite: Favorite,
     onRowClicked: (String) -> Unit
 ) {
@@ -76,7 +77,7 @@ fun CreateFavoriteRow(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp)
+                .padding(MaterialTheme.dimensions.dimen1_25)
                 .clickable {
                     onRowClicked(favorite.city)
                 },
@@ -100,7 +101,7 @@ fun CreateFavoriteRow(
             ) {
                 Text(
                     text = favorite.country, modifier = Modifier
-                        .padding(10.dp)
+                        .padding(MaterialTheme.dimensions.dimen1_25)
                         .clip(CircleShape)
                 )
             }

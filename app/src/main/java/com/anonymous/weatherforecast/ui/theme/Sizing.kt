@@ -9,12 +9,12 @@ import androidx.compose.ui.unit.sp
 
 data class Sizing(
     val default: TextUnit = 0.sp,
-    val extraSmall: TextUnit = 4.sp,
-    val small: TextUnit = 8.sp,
-    val medium: TextUnit = 4.sp,
-    val normal: TextUnit = 18.sp,
-    val large: TextUnit = 24.sp,
-    val extraLarge: TextUnit = 32.sp
+    val extraSmall: TextUnit = 8.sp,
+    val small: TextUnit = 12.sp,
+    val medium: TextUnit = 14.sp,
+    val normal: TextUnit = 16.sp,
+    val large: TextUnit = 18.sp,
+    val extraLarge: TextUnit = 24.sp
 )
 
 val LOCAL_SIZING = compositionLocalOf { Sizing() }

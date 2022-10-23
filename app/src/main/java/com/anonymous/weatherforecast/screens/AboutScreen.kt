@@ -12,9 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.anonymous.weatherforecast.R
+import com.anonymous.weatherforecast.ui.theme.dimensions
 import com.anonymous.weatherforecast.widgets.WeatherAppToolBar
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -28,7 +28,7 @@ fun AboutScreen(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(10.dp),
+                .padding(MaterialTheme.dimensions.dimen1_25),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {

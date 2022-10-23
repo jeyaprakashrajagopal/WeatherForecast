@@ -41,7 +41,7 @@ fun WeatherForecastTheme(
 
     CompositionLocalProvider(
         values =
-        arrayOf(LOCAL_SIZING provides Sizing())
+        arrayOf(LOCAL_SIZING provides Sizing(), LOCAL_DIMENSIONS provides Dimensions())
     ) {
         MaterialTheme(
             colors = colors,

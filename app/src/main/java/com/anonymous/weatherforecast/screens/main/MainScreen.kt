@@ -28,6 +28,7 @@ import com.anonymous.weatherforecast.model.Weather
 import com.anonymous.weatherforecast.model.WeatherItem
 import com.anonymous.weatherforecast.screens.favorites.FavoriteViewModel
 import com.anonymous.weatherforecast.screens.settings.SettingsViewModel
+import com.anonymous.weatherforecast.ui.theme.dimensions
 import com.anonymous.weatherforecast.utils.formatDate
 import com.anonymous.weatherforecast.utils.formatTime
 import com.anonymous.weatherforecast.widgets.CreateDayInformation
@@ -88,7 +89,7 @@ fun CreateWeatherInformation(weatherData: State<WeatherResult<Weather, Boolean, 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(10.dp),
+            .padding(MaterialTheme.dimensions.dimen1_25),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -97,7 +98,7 @@ fun CreateWeatherInformation(weatherData: State<WeatherResult<Weather, Boolean, 
             style = MaterialTheme.typography.h6,
             textAlign = TextAlign.Center
         )
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(MaterialTheme.dimensions.dimen1_25))
         CreateWeatherWidget(weatherData)
         CreateWindPressure(weatherData.value?.data)
         Divider(

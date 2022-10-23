@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
@@ -21,8 +22,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.anonymous.weatherforecast.ui.theme.dimensions
 import com.anonymous.weatherforecast.widgets.WeatherAppToolBar
 
 @Composable
@@ -100,8 +101,8 @@ fun CommonTextField(
         isError = isError.value,
         maxLines = 1,
         singleLine = true,
-        modifier = Modifier.padding(10.dp),
-        shape = RoundedCornerShape(10.dp),
+        modifier = Modifier.padding(MaterialTheme.dimensions.dimen1_25),
+        shape = RoundedCornerShape(MaterialTheme.dimensions.dimen1_25),
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = Color.Blue,
             unfocusedBorderColor = Color.Black,
