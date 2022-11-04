@@ -1,7 +1,9 @@
 package com.anonymous.weatherforecast.data
 
-data class WeatherResult<T, Boolean, E : Exception>(
-    var data: T? = null,
-    var loading: kotlin.Boolean? = null,
-    var error: E? = null
-)
+import com.anonymous.weatherforecast.model.Weather
+
+sealed class WeatherResult {
+    object Loading : WeatherResult()
+    data class Success(val data: Weather) : WeatherResult()
+    data class Failed(val error: String) : WeatherResult()
+}

@@ -3,12 +3,12 @@ package com.anonymous.weatherforecast.screens.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anonymous.weatherforecast.data.WeatherResult
-import com.anonymous.weatherforecast.model.Weather
 import com.anonymous.weatherforecast.repository.WeatherForecastRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,23 +17,23 @@ class WeatherViewModel @Inject constructor(
     private val repository: WeatherForecastRepository
 ) : ViewModel() {
     private val _weatherResult =
-        MutableStateFlow<WeatherResult<Weather, Boolean, java.lang.Exception>?>(WeatherResult())
-    val weatherResult = _weatherResult.asStateFlow()
-    private val _error =
-        MutableStateFlow("")
-    val error = _error.asStateFlow()
+        MutableSharedFlow<WeatherResult>(
+            replay = 1,
+            extraBufferCapacity = 1,
+            onBufferOverflow = BufferOverflow.DROP_OLDEST
+        )
+    val weatherResult = _weatherResult.asSharedFlow()
 
     private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        _error.value = throwable.message.toString()
+        _weatherResult.tryEmit(WeatherResult.Failed(throwable.message.toString()))
     }
 
     fun getWeather(query: String, unit: String) {
         if (query.isBlank()) return
         viewModelScope.launch(coroutineExceptionHandler) {
-            _weatherResult.value = _weatherResult.value?.copy(loading = true)
-            val result = repository.getWeather(query, unit)
-            _weatherResult.value = _weatherResult.value?.copy(data = result.data)
-            _weatherResult.value = _weatherResult.value?.copy(loading = false)
+            repository.getWeather(query, unit).collect {
+                _weatherResult.emit(it)
+            }
         }
     }
 }

@@ -8,7 +8,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,8 +41,7 @@ fun MainScreen(
     favoriteViewModel: FavoriteViewModel = hiltViewModel(),
     city: String
 ) {
-    val weatherData = mainViewModel.weatherResult.collectAsState()
-
+    val weatherData = mainViewModel.weatherResult.collectAsState(initial = null)
     val unitFromDb = settingsViewModel.unitList.collectAsState().value
     val curCity: String = city.ifBlank { "Offenbach" }
     val unit =
@@ -54,10 +52,45 @@ fun MainScreen(
         mainViewModel.getWeather(curCity, unit)
     }
 
+    when (weatherData.value) {
+        is WeatherResult.Loading -> Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            CircularProgressBar(
+                size = 100.dp,
+                strokeWidth = MaterialTheme.dimensions.dimen1,
+                color = Color.Magenta
+            )
+        }
+        is WeatherResult.Failed -> Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = (weatherData.value as WeatherResult.Failed).error,
+                style = MaterialTheme.typography.h3
+            )
+        }
+        is WeatherResult.Success -> CreateWeatherToolBar(
+            navController = navController,
+            weatherData = (weatherData.value as WeatherResult.Success).data,
+            favoriteViewModel = favoriteViewModel
+        )
+        null -> Unit
+    }
+}
+
+@Composable
+private fun CreateWeatherToolBar(
+    navController: NavHostController,
+    weatherData: Weather?,
+    favoriteViewModel: FavoriteViewModel
+) {
     WeatherAppToolBar(
         navController = navController,
-        title = if (weatherData.value?.data?.city != null) {
-            "${weatherData.value?.data?.city?.name},${weatherData.value?.data?.city?.country}"
+        title = if (weatherData?.city != null) {
+            "${weatherData.city.name},${weatherData.city.country}"
         } else {
             "WeatherForeCast"
         },
@@ -68,24 +101,14 @@ fun MainScreen(
 }
 
 @Composable
-private fun CreateContent(weatherData: State<WeatherResult<Weather, Boolean, java.lang.Exception>?>) {
-    if (weatherData.value?.loading == true) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            CircularProgressBar(size = 150.dp, strokeWidth = 2.dp, color = Color.Green)
-        }
-    } else {
-        if (weatherData.value?.data != null) {
-            CreateWeatherInformation(weatherData = weatherData)
-        }
+private fun CreateContent(weatherData: Weather?) {
+    if (weatherData != null) {
+        CreateWeatherInformation(weatherData = weatherData)
     }
 }
 
 @Composable
-fun CreateWeatherInformation(weatherData: State<WeatherResult<Weather, Boolean, Exception>?>) {
+fun CreateWeatherInformation(weatherData: Weather?) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -94,25 +117,25 @@ fun CreateWeatherInformation(weatherData: State<WeatherResult<Weather, Boolean, 
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "${weatherData.value?.data?.list?.first()?.dt?.let { formatDate(it) }}",
+            text = "${weatherData?.list?.first()?.dt?.let { formatDate(it) }}",
             style = MaterialTheme.typography.h6,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(MaterialTheme.dimensions.dimen1_25))
         CreateWeatherWidget(weatherData)
-        CreateWindPressure(weatherData.value?.data)
+        CreateWindPressure(weatherData)
         Divider(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(5.dp)
         )
-        CreateSunRiseAndSunSet(weatherData.value?.data)
+        CreateSunRiseAndSunSet(weatherData)
         Divider(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(5.dp)
         )
-        ShowWeatherForWeek(weatherData.value?.data?.list)
+        ShowWeatherForWeek(weatherData?.list)
     }
 }
 
@@ -229,9 +252,9 @@ fun CreateWindPressure(data: Weather?) {
 }
 
 @Composable
-fun CreateWeatherWidget(weatherData: State<WeatherResult<Weather, Boolean, Exception>?>) {
+fun CreateWeatherWidget(weatherData: Weather?) {
     val imageUrl =
-        "https://openweathermap.org/img/wn/${weatherData.value?.data?.list?.first()?.weather?.first()?.icon}.png"
+        "https://openweathermap.org/img/wn/${weatherData?.list?.first()?.weather?.first()?.icon}.png"
     Surface(modifier = Modifier.size(200.dp), shape = CircleShape, color = Color.Yellow) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -240,7 +263,7 @@ fun CreateWeatherWidget(weatherData: State<WeatherResult<Weather, Boolean, Excep
             WeatherStateImage(imageUrl = imageUrl)
             Text(
                 text = "${
-                    weatherData.value?.data?.list?.first()?.temp?.day?.let {
+                    weatherData?.list?.first()?.temp?.day?.let {
                         formatDecimals(
                             it
                         )
@@ -252,7 +275,7 @@ fun CreateWeatherWidget(weatherData: State<WeatherResult<Weather, Boolean, Excep
                 modifier = Modifier.weight(1f)
             )
             Text(
-                text = "${weatherData.value?.data?.list?.first()?.weather?.first()?.main}",
+                text = "${weatherData?.list?.first()?.weather?.first()?.main}",
                 fontStyle = FontStyle.Italic
             )
         }
